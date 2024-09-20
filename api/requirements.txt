@@ -3,3 +3,4 @@ ipykernel==6.29.5
 pylint==3.2.7
 fastapi[standard]==0.115.0
 uvicorn==0.30.6
+black==24.8.0
