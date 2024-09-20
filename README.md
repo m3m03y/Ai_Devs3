@@ -22,9 +22,9 @@ pip -V # should be path to virtual env
 ```
 
 ### Prerequisites
-.venv - virutal env for Python
-.env - file with API_KEY value specified
-For JupyterLab env variable must be added with: `%env API_KEY=<your-api-key>`
+- .venv - virutal env for Python
+- .env - file with API_KEY value specified
+- For JupyterLab env variable must be added with: `%env API_KEY=<your-api-key>`
 
 # Docker
 - Add the API_KEY to .env file in project main directory
