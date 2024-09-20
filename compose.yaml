@@ -1,8 +1,8 @@
 services:
   api:
     build:
-      context: .
-      dockerfile: ./docker/Api.Dockerfile
+      context: main-api
+      dockerfile: ../docker/Api.Dockerfile
     container_name: aidevs-base-api
     restart: unless-stopped
     ports:

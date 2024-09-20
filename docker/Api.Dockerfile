@@ -7,6 +7,7 @@ WORKDIR /home/fastapi/app
 
 # Copy the application code and install dependencies in the build stage
 COPY ./api /home/fastapi/app
+COPY ./requirements.txt /home/fastapi/app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set proper file permissions (read and execute only by the fastapi user)
