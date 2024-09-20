@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Api.Dockerfile
+    container_name: aidevs-base-api
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    cap_drop:
+      - ALL  # Dropping all unnecessary capabilities for extra security
+    environment:
+      - API_KEY=${API_KEY}
+    
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"  # Limit the CPU usage to 50%
+          memory: "512M"
+
+    networks:
+      - api_network
+
+networks:
+  api_network:
+    driver: bridge
