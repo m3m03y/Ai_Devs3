@@ -1,0 +1,5 @@
+requests==2.32.3
+ipykernel==6.29.5
+pylint=3.2.7
+fastapi[standard]
+uvicorn
