@@ -35,6 +35,7 @@ def send_answer(answer_content):
     response = requests.post(API_URL + "send-answer", data=answer_json, timeout=30)
     logging.info("Answer sent resulted in following response:\n%s", response.text)
 
+
 if __name__ == "__main__":
     task_description = get_description()
     answer = solve_task(task_description)
