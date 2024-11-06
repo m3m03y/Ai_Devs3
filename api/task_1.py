@@ -53,6 +53,7 @@ def get_answer() -> tuple[str, str]:
         return question, answer
     except json.decoder.JSONDecodeError:
         LOG.error("Cannot decode model response: %s", content)
+        return None
 
 
 def login(answer: str, username: str = USERNAME, password: str = PASSWORD) -> str:
@@ -69,7 +70,11 @@ def login(answer: str, username: str = USERNAME, password: str = PASSWORD) -> st
 def find_hidden_data() -> str:
     """Find flag and hidden links after login"""
     answer = get_answer()
+    if answer is None:
+        return None
     hidden_page = login(answer)
+    if hidden_page is None:
+        return None
     prompt = SOLVE_TASK_1.replace(PLACEHOLDER, hidden_page)
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -89,5 +94,6 @@ def find_hidden_data() -> str:
         return flag
     except json.decoder.JSONDecodeError:
         LOG.error("Cannot decode model response: %s", content)
+        return None
 
 find_hidden_data()
