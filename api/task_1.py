@@ -8,8 +8,8 @@ import json
 from http import HTTPStatus
 import requests
 from openai import OpenAI
-from logger import LOG
-from prompts import ROBOT_CAPTCHA, SOLVE_TASK_1
+from conf.logger import LOG
+from common.prompts import ROBOT_CAPTCHA, SOLVE_TASK_1
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 WEBSITE_URL = os.environ["TASK1_WEBSITE_URL"]

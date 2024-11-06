@@ -4,9 +4,9 @@ import json
 import os
 import requests
 
-from utils import pretty_json
+from common.utils import pretty_json
 from models import Task, Answer
-from logger import LOG
+from conf.logger import LOG
 
 API_KEY = os.environ["API_KEY"]
 

@@ -8,13 +8,13 @@ from models import Task, Answer
 app = FastAPI()
 
 
-@app.post("/get-task")
+@app.post("/task")
 def get_task_descrition(task: Task) -> PlainTextResponse:
     """Get task description"""
     return PlainTextResponse(content=get_task(task), media_type="text/plain")
 
 
-@app.post("/send-answer")
+@app.post("/answer")
 def read_item(answer: Answer) -> PlainTextResponse:
     """Send answer to api"""
     status_code, message = send_answer(answer)

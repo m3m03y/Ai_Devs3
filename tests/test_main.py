@@ -5,7 +5,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 from api.main import app
-from api.utils import pretty_json
+from api.common.utils import pretty_json
 
 client = TestClient(app)
 
@@ -27,7 +27,7 @@ def test_get_description(mocker, expected_description):
     mock_response.text = expected_description
     mocker.patch("requests.get", return_value=mock_response)
     task_json = json.dumps({"task_url": "test-path"})
-    result = client.post("/get-task", content=task_json, timeout=30)
+    result = client.post("/task", content=task_json, timeout=30)
     assert result.text == expected_description
 
 
@@ -41,12 +41,12 @@ def test_send_answer():
     answer_url = os.environ["TEST_ANSWER_URL"]
 
     task_json = json.dumps({"task_url": task_url})
-    task = client.post("/get-task", content=task_json, timeout=30)
+    task = client.post("/task", content=task_json, timeout=30)
     answer_list = task.text.splitlines()
     answer_json = json.dumps(
         {"task_id": task_name, "answer_url": answer_url, "answer_content": answer_list}
     )
-    response = client.post("/send-answer", content=answer_json, timeout=30)
+    response = client.post("/answer", content=answer_json, timeout=30)
     expected_success_message = pretty_json(
         {"code": 0, "message": "Super. Wszystko OK!"}
     )
