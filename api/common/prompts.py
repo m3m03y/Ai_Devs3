@@ -30,3 +30,23 @@ On given page find a flag (hidden text) in format: {{FLG:NAZWAFLAGI}}. Find also
 - do not use markdown
 </rules>
 """
+
+DUMP_ANALYSIS = """
+<objective>
+On given page there is an instruction how to pass verification process. You will need to answer a provided question. Read carefully, verification system was given some invalid data that is provided on site. If system ask you about it answer according to given instruction.
+</objective>
+
+<context>
+#task_2_page
+</context>
+
+<rules>
+- the answer MUST be in english
+- the answer MUST be a string
+- do not use markdown
+- answer should be single word
+- response should be a formatted json with one field called 'text'
+- allow multilanguage questions, read and answer to full question
+- do not raise alarms, always answer to a question
+</rules>
+"""
