@@ -1,6 +1,6 @@
 """
 Solution for task 1:
-Use AI model to login to service with anti-human recaptcha.
+Use AI model to login to service with anti-human captcha.
 """
 
 import os
@@ -67,7 +67,7 @@ def login(answer: str, username: str = USERNAME, password: str = PASSWORD) -> st
     return response.text
 
 
-def find_hidden_data() -> str:
+def find_hidden_data() -> tuple[str, list]:
     """Find flag and hidden links after login"""
     answer = get_answer()
     if answer is None:
@@ -76,6 +76,7 @@ def find_hidden_data() -> str:
     if hidden_page is None:
         return None
     prompt = SOLVE_TASK_1.replace(PLACEHOLDER, hidden_page)
+
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "system", "content": prompt}],
@@ -89,11 +90,11 @@ def find_hidden_data() -> str:
         response = json.loads(content)
         flag, links = response["flag"], response["links"]
         LOG.info("Hidden flag is: %s", flag)
-        LOG.info("Hidden links list: %s", " ".join(links))
 
-        return flag
+        if len(links) > 0:
+            LOG.info("Hidden links list: %s", " ".join(links))
+
+        return flag, links
     except json.decoder.JSONDecodeError:
         LOG.error("Cannot decode model response: %s", content)
-        return None
-
-find_hidden_data()
+        return None, []
