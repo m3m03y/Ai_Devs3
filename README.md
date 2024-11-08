@@ -1,4 +1,5 @@
-This is the repository for solving tasks in AiDevs3: https://www.aidevs.pl/
+This is the repository for solving tasks in AiDevs3:
+This repository contains notes, solutions, and resources from the [AI Devs](https://www.aidevs.pl/) course on building AI-integrated applications. The course covers a broad range of topics related to developing with large language models (LLMs), including API integration, prompt engineering, vector databases, and real-world AI applications.
 
 # Install OLLAMA
 ## Linux
@@ -23,9 +24,16 @@ pip -V # should be path to virtual env
 
 ### Prerequisites
 - .venv - virutal env for Python
-- .env - file with API_KEY value specified
+- .env - file with env variables including apis keys and task urls
 - For JupyterLab env variable must be added with: `%env API_KEY=<your-api-key>`
 
 # Docker
-- Add the API_KEY to .env file in project main directory
+- use template .env.example to create .env file
 - /etc/hosts file may be updated to specify domain name for localhost ex. api.aidevs.local
+
+# Prompts
+## Promptfoo
+**Installation**:
+```
+npm install -g promptfoo
+```
