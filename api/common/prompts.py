@@ -86,6 +86,21 @@ AI:
 </example>
 """
 
+# Solution to task 4
+_LABIRYNTH_SOLVE = """
+Your task is to move throught full labirynth and get to the end.
+<objective>
+Move robot to the destination point. You need to move it twice up, then twice to the right, twice to the down, then three times to the right.
+</objective>
+
+<rules>
+- robot understands only commands "UP", "RIGHT", "DOWN", "LEFT"
+- to move robots build a json file that contains a "steps" object with a string as value
+- the "steps" value should be the subsequent directions in which the robot should move, separated by comma
+- output format must be json NOT MARKDOWN
+</rules>
+"""
+
 CENSORE_FILE = """
 You have a context with user data.
 <objective>
