@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from solutions.captcha_solver import find_hidden_data
 from solutions.robot_dump import verification_process
 from solutions.file_fixer import fix_file
+from solutions.censorship import get_censored_file
 
 solutions_router = APIRouter()
 
@@ -32,3 +33,12 @@ def complete_task_3() -> JSONResponse:
     if fixinig_result is None:
         raise HTTPException(status_code=400, detail="Fixing file failed.")
     return JSONResponse(content=fixinig_result)
+
+
+@solutions_router.get("/censorship")
+def complete_task_5() -> JSONResponse:
+    """Solve task 5"""
+    censorship_result = get_censored_file()
+    if censorship_result is None:
+        raise HTTPException(status_code=400, detail="Cannot censored file.")
+    return JSONResponse(content=censorship_result)

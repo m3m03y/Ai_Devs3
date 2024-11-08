@@ -85,3 +85,29 @@ AI:
 }
 </example>
 """
+
+CENSORE_FILE = """
+You have a context with user data.
+<objective>
+Replace each sensitive data with word "CENZURA"
+</objective>
+
+<rules>
+- sensitive data: name+surname, full street address (with number), city, age
+- each sensitive word replace with word "CENZURA" (do not change word form)
+- MUST always replace all sensitive words, all of them should be present in user input
+- DO NOT edit other parts of the sentence
+- other words and punctuation marks should be in the same form as original request
+</rules>
+
+<example>
+USER: Dane podejrzanego: Jakub Woźniak. Adres: Rzeszów, ul. Miła 4. Wiek: 33 lata.
+AI: Dane podejrzanego: CENZURA. Adres: CENZURA, ul. CENZURA. Wiek: CENZURA lata.
+
+USER: Podejrzany: Krzysztof Kwiatkowski. Mieszka w Szczecinie przy ul. Różanej 12. Ma 31 lat.
+AI: Podejrzany: CENZURA. Mieszka w CENZURA przy ul. CENZURA. Ma CENZURA lat.
+
+USER: Tożsamość podejrzanego: Michał Wiśniewski. Mieszka we Wrocławiu na ul. Słonecznej 20. Wiek: 30 lat.
+AI: Tożsamość podejrzanego: CENZURA. Mieszka we CENZURA na ul. CENZURA. Wiek: CENZURA lat.
+</example>
+"""
