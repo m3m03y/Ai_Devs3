@@ -16,7 +16,7 @@ WEBSITE_URL = os.environ["TASK1_WEBSITE_URL"]
 USERNAME = os.environ["TASK1_USERNAME"]
 PASSWORD = os.environ["TASK1_PASSWORD"]
 TIMEOUT = 20
-PLACEHOLDER = "task_1_page"
+PLACEHOLDER = "#task_1_page"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 

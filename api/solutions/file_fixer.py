@@ -21,7 +21,7 @@ VERIFY_URL = os.environ["TASK3_VERIFY_URL"]
 PROJECT_DIR = os.environ["PROJECT_DIR"]
 FILENAME = "task3.json"
 TIMEOUT = 60
-PLACEHOLDER = "task_3_test_data"
+PLACEHOLDER = "#task_3_test_data"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 

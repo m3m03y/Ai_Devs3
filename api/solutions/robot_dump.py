@@ -15,7 +15,7 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 VERIFY_URL = os.environ["TASK2_URL"]
 DUMP_URL = os.environ["TASK2_DUMP_URL"]
 TIMEOUT = 20
-PLACEHOLDER = "task_2_page"
+PLACEHOLDER = "#task_2_page"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
