@@ -14,8 +14,8 @@ client = TestClient(app)
     "expected_description",
     [
         "abc\ncdf\n",
-        # [1, 2, 3, 4],
-        # {"test": 1, "other-value": 2},
+        "[1, 2, 3, 4]",
+        "{'test': 1, 'other-value': 2}",
     ],
 )
 def test_get_description(mocker, expected_description):
