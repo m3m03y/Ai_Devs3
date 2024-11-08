@@ -22,3 +22,8 @@ def complete_task_2() -> JSONResponse:
     if verification_result is None:
         raise HTTPException(status_code=404, detail="Verification task failed")
     return JSONResponse(content=verification_result)
+
+
+@solutions_router.get("/file-fix")
+def complete_task_3() -> JSONResponse:
+    """Solve task 3"""

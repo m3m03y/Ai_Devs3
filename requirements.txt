@@ -10,3 +10,4 @@ pytest-mock==3.14.0
 pytest-cov==5.0.0
 openai==1.54.2
 pre-commit==4.0.1
+llamaapi==0.1.36
