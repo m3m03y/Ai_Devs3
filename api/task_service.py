@@ -4,9 +4,9 @@ import json
 import os
 import requests
 
-from utils import pretty_json
+from common.utils import pretty_json
 from models import Task, Answer
-from logger import LOG
+from conf.logger import LOG
 
 API_KEY = os.environ["API_KEY"]
 
@@ -30,12 +30,13 @@ def send_answer(answer: Answer) -> tuple[int, str]:
     Returns:
         tuple[int, str]: response status code and body
     """
+    LOG.info("TASK_SERVICE: Answer body is: %s", answer.answer_content)
     full_answer = {
         "task": answer.task_id,
         "apikey": API_KEY,
         "answer": answer.answer_content,
     }
-    answer_body = json.dumps(full_answer)
+    answer_body = json.dumps(full_answer, ensure_ascii=False).encode("utf8")
     LOG.info(
         "TASK_SERVICE: Answer to task: %s\n%s", answer.task_id, pretty_json(full_answer)
     )
