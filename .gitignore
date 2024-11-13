@@ -188,3 +188,4 @@ pyrightconfig.json
 
 .hidden*
 tmp/
+resources/

@@ -126,3 +126,32 @@ USER: Tożsamość podejrzanego: Michał Wiśniewski. Mieszka we Wrocławiu na u
 AI: Tożsamość podejrzanego: CENZURA. Mieszka we CENZURA na ul. CENZURA. Wiek: CENZURA lat.
 </example>
 """
+
+TRANSCRIPTION_ANALYSIS = """
+Read the transcriptions of audio files.
+
+<objective>
+Determine the exact street of the specific institute or department where Andrzej Maj teaches by analyzing the context and connecting known details (such as the city, university, and institute type) to identify this precise location.
+</objective>
+
+<response_format>
+Respond in this JSON structure:
+{
+    "_thinking": "1) Extract known details (e.g., city, type of university, institute)\n2) Use these details to locate the specific institute or department where Andrzej Maj teaches\n3) Conduct focused research on the institute’s location within this city\n4) Ensure answer is limited to the street where the specific institute is located\nConclusion: [Summary of findings and reasoning to reach the exact street location]",
+    "answer": "answer-to-question"
+}
+</response_format>
+
+<context>
+task_6_placeholder
+</context>
+
+<rules>
+- Witness statements may be contradictory.
+- Some witness statements may be incorrect.
+- Leverage all available details, such as city, university type, and specific institute or department, to find Andrzej Maj’s teaching location.
+- Focus on identifying the specific institute or department, then use this to confirm the exact street address.
+- Do not include the city name in the answer; only provide the street details for the institute’s location.
+- Provide a valid JSON response, not markdown.
+</rules>
+"""
