@@ -155,3 +155,26 @@ task_6_placeholder
 - Provide a valid JSON response, not markdown.
 </rules>
 """
+
+# Solution to task 7
+_FIND_CITY = """
+<objective>
+Identify the correct city by analyzing four map fragments. Three maps depict the correct city, while one map shows an incorrect city. Use the keywords "spichlerze" and "twierdze" to assist in confirming the correct city. Focus on extracting and evaluating street names and any other identifiable landmarks across the maps to find and confirm the correct city.
+</objective>
+
+<response_format>
+Respond in this JSON structure:
+{
+    "_thinking": "1) Extract known details (e.g., street names, buildings, train or bus stations)\n2) Use these details to locate the city for which maps match\n3) Conduct focused research on city details\n4) Ensure answer is limited to the city name\nConclusion: [Summary of findings and reasoning to reach the exact city name]",
+    "answer": "city-name"
+}
+</response_format>
+
+<rules>
+- Only one map fragment shows the wrong city; the other three show the correct city.
+- The identified city must fit the keywords provided: "spichlerze" (granaries) and "twierdze" (fortresses).
+- Focus on extracting street names, landmarks, or recognizable elements across each map fragment and compare them to validate consistency with the correct city.
+- Determine which map fragment deviates from the others based on these details.
+- The final answer should be limited to the city name.
+</rules>
+"""
