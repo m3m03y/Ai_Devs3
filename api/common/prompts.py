@@ -230,8 +230,11 @@ task_9_context
 
 <rules>
 - Look for explicit mentions of captured humans or signs of their presence to assign "people".
+- Sign of capture must be find to assign "people" if not assign "other".
 - Identify references to repaired hardware or machines issues to assign "hardware".
+- There must be REPAIR hardware or machine part to assign "hardware" label if not assign "other".
 - If neither is present, assign "other".
+- There are only those three labels to assign, if there something else is needed assigne always "other" label.
 - Ensure the response is in valid JSON format (not markdown).
 - Make sure _thinking value is correct string.
 - Report in which lack of pineapple pizza is mentioned must be labeled as "other", CANNOT be "people".
