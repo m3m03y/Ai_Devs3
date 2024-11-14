@@ -223,15 +223,17 @@ task_9_context
 
 <response_format>
 {
-    "_thinking": "1) Identify key elements indicating relevance to humans or machines.\n2) Use these elements to determine the correct label.\nConclusion: [Summary of findings and reasoning for label assignment]",
+    "_thinking": "Identify key elements indicating relevance to humans or machines. Use these elements to determine the correct label. Conclusion: [Summary of findings and reasoning for label assignment]",
     "label": "label-value"
 }
 </response_format>
 
 <rules>
-- Look for mentions of captured humans or signs of their presence to assign "people".
+- Look for explicit mentions of captured humans or signs of their presence to assign "people".
 - Identify references to repaired hardware or machines issues to assign "hardware".
 - If neither is present, assign "other".
-- Ensure the response is in valid JSON format
+- Ensure the response is in valid JSON format (not markdown).
+- Make sure _thinking value is correct string.
+- Report in which lack of pineapple pizza is mentioned must be labeled as "other", CANNOT be "people".
 </rules>
 """

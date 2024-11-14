@@ -70,6 +70,7 @@ def _transcribe_audio(filename: str) -> str:
                 language="pl",
                 response_format="text",
             )
+            LOG.info("[TASK-9] Transcription content: %s", transcription)
         except BadRequestError as exception:
             LOG.error("[TASK-9] Could not transcribe audio file: %s", exception.message)
             return None
