@@ -178,3 +178,18 @@ Respond in this JSON structure:
 - The final answer should be limited to the city name.
 </rules>
 """
+
+_GENERATE_ROBOT_IMAGE = """
+<objective>
+Generate an image based on the description.
+</objective>
+
+<context>
+description
+</context>
+
+<rules>
+- Image format: PNG
+- Image dimensions: 1024×1024 pixels
+</rules>
+"""
