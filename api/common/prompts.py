@@ -193,3 +193,29 @@ description
 - Image dimensions: 1024×1024 pixels
 </rules>
 """
+
+ANALYSE_REPORT = """
+Given a report, analyze it to determine if the content relates to humans, machines, or neither.
+
+<objective>
+Assign the appropriate label based on the report's content.
+</objective>
+
+<context>
+task_9_context
+</context>
+
+<response_format>
+{
+    "_thinking": "1) Identify key elements indicating relevance to humans or machines.\n2) Use these elements to determine the correct label.\nConclusion: [Summary of findings and reasoning for label assignment]",
+    "label": "label-value"
+}
+</response_format>
+
+<rules>
+- If the report is about humans, set label to "people".
+- If the report is about machines, set label to "hardware".
+- If the report is unrelated to both, set label to "other".
+- Return a valid JSON format.
+</rules>
+"""

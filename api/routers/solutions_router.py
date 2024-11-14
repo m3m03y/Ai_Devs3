@@ -7,6 +7,7 @@ from solutions.robot_dump import verification_process
 from solutions.file_fixer import fix_file
 from solutions.censorship import get_censored_file
 from solutions.recording_analyzer import create_transcriptions, analyse_transcriptions
+from solutions.report_processor import report_analysis
 
 solutions_router = APIRouter()
 
@@ -52,4 +53,13 @@ def complete_task_6() -> JSONResponse:
     if transcriptions is None or len(transcriptions) == 0:
         raise HTTPException(status_code=400, detail="Cannot create transcriptions.")
     analysis_result = analyse_transcriptions(transcriptions)
+    return JSONResponse(content=analysis_result)
+
+
+@solutions_router.get("/task9/report-processor")
+def complete_task_9() -> JSONResponse:
+    """Solve task 9"""
+    analysis_result = report_analysis()
+    if analysis_result is None:
+        raise HTTPException(status_code=400, detail="Cannot analyze recordings.")
     return JSONResponse(content=analysis_result)
