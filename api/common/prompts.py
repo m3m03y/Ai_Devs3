@@ -194,6 +194,22 @@ description
 </rules>
 """
 
+DESCRIBE_IMAGE = """
+Translate the content of report scan into text.
+
+<objective>
+Extract and return main report content written in polish.
+</objective>
+
+<rules>
+- Return only report description.
+- Ignore file title.
+- Ignore section "from".
+- Ignore signature at the bottom.
+- In response return only report text.
+</rules>
+"""
+
 ANALYSE_REPORT = """
 Given a report, analyze it to determine if the content relates to humans, machines, or neither.
 
@@ -213,9 +229,9 @@ task_9_context
 </response_format>
 
 <rules>
-- If the report is about humans, set label to "people".
-- If the report is about machines, set label to "hardware".
-- If the report is unrelated to both, set label to "other".
-- Return a valid JSON format.
+- Look for mentions of captured humans or signs of their presence to assign "people".
+- Identify references to repaired hardware or machines issues to assign "hardware".
+- If neither is present, assign "other".
+- Ensure the response is in valid JSON format
 </rules>
 """

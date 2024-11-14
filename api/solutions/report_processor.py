@@ -10,7 +10,7 @@ import base64
 from dataclasses import dataclass
 from groq import Groq, BadRequestError
 from openai import OpenAI
-from common.prompts import ANALYSE_REPORT
+from common.prompts import ANALYSE_REPORT, DESCRIBE_IMAGE
 from conf.logger import LOG
 from task_service import send_answer
 from models import Answer
@@ -95,7 +95,7 @@ def _describe_image(filename: str) -> str:
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe file"},
+                        {"type": "text", "text": DESCRIBE_IMAGE},
                         {
                             "type": "image_url",
                             "image_url": {
@@ -179,6 +179,8 @@ def _build_answer(report_results: list[_ReportResult]) -> dict:
             answer["people"].append(result.filename)
         elif result.label == "hardware":
             answer["hardware"].append(result.filename)
+    answer["people"].sort()
+    answer["hardware"].sort()
     LOG.info("[TASK-9] Answer: %s", json.dumps(answer))
     return answer
 
