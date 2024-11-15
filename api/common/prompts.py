@@ -211,7 +211,7 @@ Extract and return main report content written in polish.
 """
 
 ANALYSE_REPORT = """
-Given a report, analyze it to determine if the content relates to humans, machines, or neither.
+Given a report, analyze it to determine if the content relates to captured humans, repaired machines, or neither.
 
 <objective>
 Assign the appropriate label based on the report's content.
@@ -223,20 +223,19 @@ task_9_context
 
 <response_format>
 {
-    "_thinking": "Identify key elements indicating relevance to humans or machines. Use these elements to determine the correct label. Conclusion: [Summary of findings and reasoning for label assignment]",
+    "_thinking": "Identify key elements to identify context: capture humans or sing of their presents, or repaired machines. Use these elements to determine the correct label. Conclusion: [Summary of findings and reasoning for label assignment]",
     "label": "label-value"
 }
 </response_format>
 
 <rules>
-- Look for explicit mentions of captured humans or signs of their presence to assign "people".
-- Sign of capture must be find to assign "people" if not assign "other".
-- Identify references to repaired hardware or machines issues to assign "hardware".
-- There must be REPAIR hardware or machine part to assign "hardware" label if not assign "other".
+- Information about captured humans or signs of their presence qualify for "people" label.
+- Information about staff, routine activities, morale, working conditions or human interactions DO NOT qualify for "people" label.
+- Information about fixed hardware faults qualify for "hardware" label.
+- Information related to software, machine operations, system operations, hardware improvements DO NOT qualify for "hardware" label.
 - If neither is present, assign "other".
-- There are only those three labels to assign, if there something else is needed assigne always "other" label.
+- Use only "hardware", "people" and "other" labels if cannot decide use "other".
 - Ensure the response is in valid JSON format (not markdown).
 - Make sure _thinking value is correct string.
-- Report in which lack of pineapple pizza is mentioned must be labeled as "other", CANNOT be "people".
 </rules>
 """

@@ -47,7 +47,7 @@ def _get_file_map() -> dict:
                 filenames["text"].append(file)
             case ".png":
                 filenames["image"].append(file)
-    LOG.info(
+    LOG.debug(
         "[TASK-9] Filenames in %s directory detected: %s",
         FILE_DIR,
         json.dumps(filenames),
@@ -59,7 +59,7 @@ def _transcribe_audio(filename: str) -> str:
     audio_filename = os.fspath(f"{FILE_DIR}/{filename}")
     LOG.debug("[TASK-9] Read audio file: %s", audio_filename)
     with open(audio_filename, "rb") as file:
-        LOG.info("[TASK-9] Transcribing audio file: %s.", filename)
+        LOG.debug("[TASK-9] Transcribing audio file: %s.", filename)
         audio_binary = io.BytesIO(file.read())
         audio_binary.name = "input.mp3"
         try:
@@ -70,7 +70,7 @@ def _transcribe_audio(filename: str) -> str:
                 language="pl",
                 response_format="text",
             )
-            LOG.info("[TASK-9] Transcription content: %s", transcription)
+            LOG.debug("[TASK-9] Transcription content: %s", transcription)
         except BadRequestError as exception:
             LOG.error("[TASK-9] Could not transcribe audio file: %s", exception.message)
             return None
@@ -89,7 +89,7 @@ def _describe_image(filename: str) -> str:
     LOG.debug("[TASK-9] Encoded image: %s.", image)
 
     try:
-        LOG.info("[TASK-9] Describe image: %s", filename)
+        LOG.debug("[TASK-9] Describe image: %s", filename)
         completion = groq_client.chat.completions.create(
             model="llama-3.2-11b-vision-preview",
             messages=[
@@ -120,13 +120,13 @@ def _describe_image(filename: str) -> str:
     message = completion.choices[0].message
     LOG.debug("[TASK-9] Response from assistant with image description: %s", message)
     content = message.content
-    LOG.info("[TASK-9] Message content with image description: %s", content)
+    LOG.debug("[TASK-9] Message content with image description: %s", content)
     return content
 
 
 def _read_text_file(filename: str) -> str:
     text_filename = os.fspath(f"{FILE_DIR}/{filename}")
-    LOG.info("[TASK-9] Read text file: %s", text_filename)
+    LOG.debug("[TASK-9] Read text file: %s", text_filename)
     with open(text_filename, "r", encoding="UTF-8") as file:
         return file.read()
 
@@ -142,11 +142,11 @@ def _analyse_text(text: str) -> str:
     message = completion.choices[0].message
     LOG.debug("[TASK-9] Response from assistant: %s", message)
     content = message.content
-    LOG.info("[TASK-9] Message content: %s", content)
+    LOG.debug("[TASK-9] Message content: %s", content)
 
     try:
         response = json.loads(content)
-        LOG.info("[TASK-9] Answer from the model: %s", response)
+        LOG.debug("[TASK-9] Answer from the model: %s", response)
         return response
     except json.decoder.JSONDecodeError:
         LOG.error("[TASK-9] Cannot decode model response: %s", content)
@@ -155,7 +155,7 @@ def _analyse_text(text: str) -> str:
 
 def _build_report_result(response_from_ai: str, filename: str) -> _ReportResult:
     label = response_from_ai["label"]
-    LOG.info("[TASK-9] File = %s, Label = %s", filename, label)
+    LOG.debug("[TASK-9] File = %s, Label = %s", filename, label)
     return _ReportResult(label=label, filename=filename)
 
 
@@ -196,11 +196,21 @@ def _send_answer(answer_content: dict) -> dict:
 def report_analysis() -> dict:
     """Analyse all reports in resource directory"""
     files = _get_file_map()
+    LOG.info(
+        "[TASK-9] %d audio files, %d text files, %d images detected.",
+        len(files["audio"]),
+        len(files["text"]),
+        len(files["image"]),
+    )
     reports = []
+    LOG.info("[TASK-9] Start report analysis.")
     for _, (filetype, file_list) in enumerate(files.items()):
         for filename in file_list:
             result = _analyse_file(filename, filetype)
             reports.append(result)
-
+    LOG.info("[TASK-9] %d report analyzed.", len(reports))
     answer = _build_answer(reports)
-    return _send_answer(answer)
+    LOG.info("[TASK-9] The answer: %s", json.dumps(answer))
+    response_from_api = _send_answer(answer)
+    LOG.info("[TASK-9] Response from verify api: %s", json.dumps(response_from_api))
+    return response_from_api
