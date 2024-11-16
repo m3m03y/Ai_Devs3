@@ -8,6 +8,7 @@ from solutions.file_fixer import fix_file
 from solutions.censorship import get_censored_file
 from solutions.recording_analyzer import create_transcriptions, analyse_transcriptions
 from solutions.report_processor import report_analysis
+from solutions.article_reader import answer_questions
 
 solutions_router = APIRouter()
 
@@ -63,3 +64,18 @@ def complete_task_9() -> JSONResponse:
     if analysis_result is None:
         raise HTTPException(status_code=400, detail="Cannot analyze recordings.")
     return JSONResponse(content=analysis_result)
+
+
+@solutions_router.get("/task10/article-reader")
+def complete_task_10() -> JSONResponse:
+    """Solve task 10"""
+    try:
+        answers = answer_questions()
+        if answers is None:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot answer to questions based on article content.",
+            )
+        return JSONResponse(content=answers)
+    except ValueError:
+        return JSONResponse(content={"error": "ValueError"})

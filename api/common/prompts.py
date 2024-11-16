@@ -239,3 +239,106 @@ task_9_context
 - Make sure _thinking value is correct string.
 </rules>
 """
+
+CONVERT_ARTICLE = """
+Read article that contains text, figures and audio recordings. Remove HTML tags and prepare one continous text. Audio and figures replace with placeholders.
+
+<objective>
+Extract text from article, replace figures and audio usage with placeholders.
+</objective>
+
+<context>
+task_10_article
+</context>
+
+<response_format>
+{
+    "_thinking": "Identify and remove html tags. Detect resources url and replace them with placeholder. Conclusion: [Summary of findings and reasoning for article text extraction]",
+    "content": "extracted-text",
+    "placeholders": [
+        {
+            "placeholder-name": "placeholder-value",
+            "resource-url": "resource-url"
+        }
+    ]
+}
+</response_format>
+
+<rules>
+- Remove all HTML tags and new lines.
+- Extract text from article.
+- DO NOT change text content.
+- Figures and audio occurance in text replace with placeholder which is file name only.
+- If there is some description written under figure ex. caption put it after placeholder.
+- Placeholder should be in format placeholder_<filename>_<extension>, should be put in place of resource and returned in final response.
+- Response should contains a list of objects that contains placeholders and url to replaced resource.
+- Response should be in valid JSON format (not markdown).
+- Response should contain "content" field which includes extracted texts with placeholders in audio and figures places.
+- Make sure content is valid string.
+- Ensure that the output retains all special characters, including Polish characters..
+</rules>
+
+<placeholder_examples>
+filename: mango.png
+placeholder: placeholder_mango_png
+
+filename: wave.mp3
+placeholer: placeholder_wave_mp3
+</placeholder_examples>
+"""
+
+DESCRIBE_FIGURE = """
+Some intro information:
+This model analyzes images to provide detailed descriptions that can be processed by subsequent models.
+
+<objective>
+Generate a comprehensive text description from the provided image. Describe the following elements in detail:
+1. Location: Identify and provide context about the place depicted.
+2. Research Objects: List and describe any research-related objects visible in the image.
+3. Results of Actions: Detail any visible outcomes or changes resulting from specific actions.
+4. Artifacts: Mention and describe any notable artifacts present in the image, including those marked in color.
+5. Buildings: Describe visible buildings, architecture and style to help identify location of such place.
+Ensure the description is structured and clear for further processing.
+</objective>
+
+<rules>
+- Focus on clarity and detail in descriptions.
+- Use structured formatting for easy comprehension.
+- Ensure all elements are addressed to provide a holistic view of the image.
+- Add information about location were pictures could be made.
+</rules>
+"""
+
+ANSWER_ARTICLE_QUESTIONS = """
+Given an article with images descriptions and audio files transcriptions read it and analyse to answer questions.
+
+<objective>
+Read and understand the article.
+</objective>
+
+<context>
+task_10_article
+</context>
+
+<response_format>
+{
+    "response":
+    [
+        {
+            "question": "question",
+            "answer": "answer"
+        }
+    ]
+}
+</response_format>
+
+<rules>
+- Audio transcription is inserted into AUDIO_TRANSCRIPTION tag.
+- Image description is inserted into IMAGE_DESCRIPTION tag.
+- After each image there is a figure caption that adds context to image description.
+- Answer must be short.
+- Answer must be in one sentence.
+- Answer as detailed as possible.
+- Response should be a valid JSON format (not markdown).
+</rules>
+"""
