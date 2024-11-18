@@ -126,3 +126,219 @@ USER: Tożsamość podejrzanego: Michał Wiśniewski. Mieszka we Wrocławiu na u
 AI: Tożsamość podejrzanego: CENZURA. Mieszka we CENZURA na ul. CENZURA. Wiek: CENZURA lat.
 </example>
 """
+
+TRANSCRIPTION_ANALYSIS = """
+Read the transcriptions of audio files.
+
+<objective>
+Determine the exact street of the specific institute or department where Andrzej Maj teaches by analyzing the context and connecting known details (such as the city, university, and institute type) to identify this precise location.
+</objective>
+
+<response_format>
+Respond in this JSON structure:
+{
+    "_thinking": "1) Extract known details (e.g., city, type of university, institute)\n2) Use these details to locate the specific institute or department where Andrzej Maj teaches\n3) Conduct focused research on the institute’s location within this city\n4) Ensure answer is limited to the street where the specific institute is located\nConclusion: [Summary of findings and reasoning to reach the exact street location]",
+    "answer": "answer-to-question"
+}
+</response_format>
+
+<context>
+task_6_placeholder
+</context>
+
+<rules>
+- Witness statements may be contradictory.
+- Some witness statements may be incorrect.
+- Leverage all available details, such as city, university type, and specific institute or department, to find Andrzej Maj’s teaching location.
+- Focus on identifying the specific institute or department, then use this to confirm the exact street address.
+- Do not include the city name in the answer; only provide the street details for the institute’s location.
+- Provide a valid JSON response, not markdown.
+</rules>
+"""
+
+# Solution to task 7
+_FIND_CITY = """
+<objective>
+Identify the correct city by analyzing four map fragments. Three maps depict the correct city, while one map shows an incorrect city. Use the keywords "spichlerze" and "twierdze" to assist in confirming the correct city. Focus on extracting and evaluating street names and any other identifiable landmarks across the maps to find and confirm the correct city.
+</objective>
+
+<response_format>
+Respond in this JSON structure:
+{
+    "_thinking": "1) Extract known details (e.g., street names, buildings, train or bus stations)\n2) Use these details to locate the city for which maps match\n3) Conduct focused research on city details\n4) Ensure answer is limited to the city name\nConclusion: [Summary of findings and reasoning to reach the exact city name]",
+    "answer": "city-name"
+}
+</response_format>
+
+<rules>
+- Only one map fragment shows the wrong city; the other three show the correct city.
+- The identified city must fit the keywords provided: "spichlerze" (granaries) and "twierdze" (fortresses).
+- Focus on extracting street names, landmarks, or recognizable elements across each map fragment and compare them to validate consistency with the correct city.
+- Determine which map fragment deviates from the others based on these details.
+- The final answer should be limited to the city name.
+</rules>
+"""
+
+_GENERATE_ROBOT_IMAGE = """
+<objective>
+Generate an image based on the description.
+</objective>
+
+<context>
+description
+</context>
+
+<rules>
+- Image format: PNG
+- Image dimensions: 1024×1024 pixels
+</rules>
+"""
+
+DESCRIBE_IMAGE = """
+Translate the content of report scan into text.
+
+<objective>
+Extract and return main report content written in polish.
+</objective>
+
+<rules>
+- Return only report description.
+- Ignore file title.
+- Ignore section "from".
+- Ignore signature at the bottom.
+- In response return only report text.
+</rules>
+"""
+
+ANALYSE_REPORT = """
+Given a report, analyze it to determine if the content relates to captured humans, repaired machines, or neither.
+
+<objective>
+Assign the appropriate label based on the report's content.
+</objective>
+
+<context>
+task_9_context
+</context>
+
+<response_format>
+{
+    "_thinking": "Identify key elements to identify context: capture humans or sing of their presents, or repaired machines. Use these elements to determine the correct label. Conclusion: [Summary of findings and reasoning for label assignment]",
+    "label": "label-value"
+}
+</response_format>
+
+<rules>
+- Information about captured humans or signs of their presence qualify for "people" label.
+- Information about staff, routine activities, morale, working conditions or human interactions DO NOT qualify for "people" label.
+- Information about fixed hardware faults qualify for "hardware" label.
+- Information related to software, machine operations, system operations, hardware improvements DO NOT qualify for "hardware" label.
+- If neither is present, assign "other".
+- Use only "hardware", "people" and "other" labels if cannot decide use "other".
+- Ensure the response is in valid JSON format (not markdown).
+- Make sure _thinking value is correct string.
+</rules>
+"""
+
+CONVERT_ARTICLE = """
+Read article that contains text, figures and audio recordings. Remove HTML tags and prepare one continous text. Audio and figures replace with placeholders.
+
+<objective>
+Extract text from article, replace figures and audio usage with placeholders.
+</objective>
+
+<context>
+task_10_article
+</context>
+
+<response_format>
+{
+    "_thinking": "Identify and remove html tags. Detect resources url and replace them with placeholder. Conclusion: [Summary of findings and reasoning for article text extraction]",
+    "content": "extracted-text",
+    "placeholders": [
+        {
+            "placeholder-name": "placeholder-value",
+            "resource-url": "resource-url"
+        }
+    ]
+}
+</response_format>
+
+<rules>
+- Remove all HTML tags and new lines.
+- Extract text from article.
+- DO NOT change text content.
+- Figures and audio occurance in text replace with placeholder which is file name only.
+- If there is some description written under figure ex. caption put it after placeholder.
+- Placeholder should be in format placeholder_<filename>_<extension>, should be put in place of resource and returned in final response.
+- Response should contains a list of objects that contains placeholders and url to replaced resource.
+- Response should be in valid JSON format (not markdown).
+- Response should contain "content" field which includes extracted texts with placeholders in audio and figures places.
+- Make sure content is valid string.
+- Ensure that the output retains all special characters, including Polish characters..
+</rules>
+
+<placeholder_examples>
+filename: mango.png
+placeholder: placeholder_mango_png
+
+filename: wave.mp3
+placeholer: placeholder_wave_mp3
+</placeholder_examples>
+"""
+
+DESCRIBE_FIGURE = """
+Some intro information:
+This model analyzes images to provide detailed descriptions that can be processed by subsequent models.
+
+<objective>
+Generate a comprehensive text description from the provided image. Describe the following elements in detail:
+1. Location: Identify and provide context about the place depicted.
+2. Research Objects: List and describe any research-related objects visible in the image.
+3. Results of Actions: Detail any visible outcomes or changes resulting from specific actions.
+4. Artifacts: Mention and describe any notable artifacts present in the image, including those marked in color.
+5. Buildings: Describe visible buildings, architecture and style to help identify location of such place.
+Ensure the description is structured and clear for further processing.
+</objective>
+
+<rules>
+- Focus on clarity and detail in descriptions.
+- Use structured formatting for easy comprehension.
+- Ensure all elements are addressed to provide a holistic view of the image.
+- Add information about location were pictures could be made.
+</rules>
+"""
+
+ANSWER_ARTICLE_QUESTIONS = """
+Given an article with images descriptions and audio files transcriptions read it and analyse to answer questions.
+
+<objective>
+Read and understand the article.
+</objective>
+
+<context>
+task_10_article
+</context>
+
+<response_format>
+{
+    "response":
+    [
+        {
+            "question": "question",
+            "answer": "answer"
+        }
+    ]
+}
+</response_format>
+
+<rules>
+- Audio transcription is inserted into AUDIO_TRANSCRIPTION tag.
+- Image description is inserted into IMAGE_DESCRIPTION tag.
+- After each image there is a figure caption that adds context to image description.
+- Answer must be short.
+- Answer must be in one sentence.
+- Answer as detailed as possible.
+- Response should be a valid JSON format (not markdown).
+</rules>
+"""
