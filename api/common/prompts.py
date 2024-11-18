@@ -342,3 +342,87 @@ task_10_article
 - Response should be a valid JSON format (not markdown).
 </rules>
 """
+
+EXTRACT_KEYWORDS_FROM_FACT = """
+Read the provided text and generate a comprehensive list of metadata/keywords.
+
+<objective>
+Extract detailed keywords and identify the main topic of the text.
+</objective>
+
+<context>
+task_11_facts
+</context>
+
+<response_format>
+{
+    "_thinking": "Explain your reasoning process",
+    "topic-name": "short description of the main subject",
+    "keywords": ["list of detailed keywords"]
+}
+</response_format>
+
+<rules>
+- Generate keywords in the NOMINATIVE CASE and SINGULAR FORM.
+- Return an empty list if files are corrupted.
+- Ensure the output is valid JSON (not markdown).
+- The topic name should be concise, focusing solely on the main person or thing in the text.
+- For invalid records, set the topic name to "invalid".
+- Include all relevant details, events, and actions as keywords.
+</rules>
+
+<example>
+USER: Franek zostawił odciski palca w szpitalu.
+AI:
+{
+    "topic-name": "Franek",
+    "keywords": ["Franek", "odcisk palca", "szpital"]
+}
+<example>
+"""
+
+EXTRACT_KEYWORDS_FROM_REPORT = """
+Read provided reports and generate metadata/keywords. Correlate the report content with relevant facts to enhance keyword extraction.
+
+<objective>
+Generate keywords for the provided text. Extract the main topic of the text, emphasizing connections to known facts.
+</objective>
+
+<facts>
+task_11_facts
+</facts>
+
+<report>
+task_11_report
+</report>
+
+<sector>
+task_11_sector
+</sector>
+
+<response_format>
+{
+    "_thinking": "Explain your reasoning process, highlighting the correlation with known facts.",
+    "keywords": [keywords-list],
+    "references": [references-list]
+}
+</response_format>
+
+<rules>
+- Generate keywords in the NOMINATIVE CASE, SINGULAR FORM and as SINGLE PHRASES.
+- Correlate report content with relevant facts to ensure comprehensive keyword extraction.
+- Return valid JSON (not markdown).
+- Include all relevant details, events, and actions as keywords.
+- If some details from facts are used, add their keys to the references list.
+- Extract sector name from filename format and add it to keywords.
+</rules>
+
+<example>
+USER: Report: Franek zostawił odciski palca w szpitalu. Sector: "report-sektor-A1.txt"
+AI:
+{
+    "keywords": ["Franek", "odcisk palca", "szpital", "sektor A1"],
+    "references": ["Franek"]
+}
+<example>
+"""

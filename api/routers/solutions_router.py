@@ -9,6 +9,7 @@ from solutions.censorship import get_censored_file
 from solutions.recording_analyzer import create_transcriptions, analyse_transcriptions
 from solutions.report_processor import report_analysis
 from solutions.article_reader import answer_questions
+from solutions.keyword_extractor import extract_keywords
 
 solutions_router = APIRouter()
 
@@ -77,5 +78,20 @@ def complete_task_10() -> JSONResponse:
                 detail="Cannot answer to questions based on article content.",
             )
         return JSONResponse(content=answers)
+    except ValueError:
+        return JSONResponse(content={"error": "ValueError"})
+
+
+@solutions_router.get("/task11/extract-keywords")
+def complete_task_11() -> JSONResponse:
+    """Solve task 11"""
+    try:
+        keywords_result = extract_keywords()
+        if keywords_result is None:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot extract keywords.",
+            )
+        return JSONResponse(content=keywords_result)
     except ValueError:
         return JSONResponse(content={"error": "ValueError"})
