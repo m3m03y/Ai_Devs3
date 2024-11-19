@@ -1,7 +1,7 @@
 """Endpoints with task solutions"""
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from solutions.captcha_solver import find_hidden_data
 from solutions.robot_dump import verification_process
 from solutions.file_fixer import fix_file
@@ -10,6 +10,7 @@ from solutions.recording_analyzer import create_transcriptions, analyse_transcri
 from solutions.report_processor import report_analysis
 from solutions.article_reader import answer_questions
 from solutions.keyword_extractor import extract_keywords
+from solutions.report_indexer import report_embeddings, get_answer
 
 solutions_router = APIRouter()
 
@@ -95,3 +96,22 @@ def complete_task_11() -> JSONResponse:
         return JSONResponse(content=keywords_result)
     except ValueError:
         return JSONResponse(content={"error": "ValueError"})
+
+
+@solutions_router.get("/task12/create-embeddings")
+def create_embeddings_task_12() -> PlainTextResponse:
+    """Create embeddings for task 12"""
+    report_embeddings()
+    return PlainTextResponse("Embeddings created successfully.")
+
+
+@solutions_router.get("/task12/answer-question")
+def complete_task_12(question: str) -> JSONResponse:
+    """Solve task 12"""
+    answer = get_answer(question)
+    if answer is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot get answer based on embeddings.",
+        )
+    return JSONResponse(content=answer)

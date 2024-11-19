@@ -426,3 +426,27 @@ AI:
 }
 <example>
 """
+
+GET_ANSWER_FROM_EMBEDED_DOCUMENT = """
+<objective>
+Answer question based on provided document.
+</objective>
+
+<context>
+task_12_placeholder
+</context>
+
+<rules>
+- Response must be a string.
+- Answers should be short and precise.
+- File creation date MUST be extracted from the filename.
+- If asked about ANY DATE, answer ONLY in "YYYY-MM-DD" format.
+- If asked about report date, EXTRACT the date from the FILENAME, regardless of other dates mentioned in the document.
+</rules>
+
+<example>
+<DOCUMENT>Filename: raport_12_02_2024.txt. 10 lutego stworzono pizzę. </DOCUMENT>
+USER: W raporcie, z którego dnia znajduje się wzmianka o pizzy?
+AI: 2024-02-12
+</example>
+"""
