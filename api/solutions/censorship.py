@@ -16,7 +16,7 @@ AIDEVS_API_KEY = os.environ["API_KEY"]
 DATA_URL = os.environ["TASK5_DATA_URL"]
 VERIFY_URL = os.environ["VERIFY_URL"]
 TIMEOUT = 60
-OLLAMA_URL = "http://127.0.0.1:11434/v1"
+OLLAMA_URL = os.environ["OLLAMA_URL"]
 MODEL = "llama3.2:3b"
 # MODEL = "gpt-4o-mini"
 
