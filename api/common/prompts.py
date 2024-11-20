@@ -450,3 +450,25 @@ USER: W raporcie, z którego dnia znajduje się wzmianka o pizzy?
 AI: 2024-02-12
 </example>
 """
+
+GET_DATACENTERS = """
+Based on create table command analyze the tables structure.
+<objective>
+Prepare the query to retrive the data and answer to question.
+</objective>
+
+<context>
+task_13_placeholder
+</context>
+
+<response_format>
+- query: query
+</response_format>
+
+<rules>
+- Response format MUST be a VALID YAML.
+- Return only the query to answer the question.
+- Return query in one line.
+- DO NOT use MARKDOWN.
+</rules>
+"""

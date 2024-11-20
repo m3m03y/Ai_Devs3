@@ -11,6 +11,7 @@ from solutions.report_processor import report_analysis
 from solutions.article_reader import answer_questions
 from solutions.keyword_extractor import extract_keywords
 from solutions.report_indexer import report_embeddings, get_answer
+from solutions.datacenter_finder import run_query, answer_question
 
 solutions_router = APIRouter()
 
@@ -115,3 +116,27 @@ def complete_task_12(question: str) -> JSONResponse:
             detail="Cannot get answer based on embeddings.",
         )
     return JSONResponse(content=answer)
+
+
+@solutions_router.post("/task13/run-query")
+def run_query_task_13(query: str) -> JSONResponse:
+    """Run query for task 13"""
+    response = run_query(query)
+    if response is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot run query.",
+        )
+    return JSONResponse(content=response)
+
+
+@solutions_router.post("/task13/solution-query")
+def solve_task_13(question: str, tables: list[str]) -> JSONResponse:
+    """Solve task 13"""
+    response = answer_question(question, tables)
+    if response is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot find answer.",
+        )
+    return JSONResponse(content=response)

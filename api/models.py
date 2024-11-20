@@ -16,3 +16,10 @@ class Answer(BaseModel):
     task_id: str
     answer_url: str
     answer_content: Any
+
+
+class DBRequest(BaseModel):
+    """Query structure to access DB using API"""
+
+    task_id: str
+    query: str
