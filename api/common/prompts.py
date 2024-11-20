@@ -452,23 +452,39 @@ AI: 2024-02-12
 """
 
 GET_DATACENTERS = """
-Based on create table command analyze the tables structure.
+Your task is to prepare a query to answer a question.
+1) Get database structures, read existing tables.
+2) Find structure of relevant tables.
+3) Based on collected data prepare final query.
+After each step prepare summary about uncovered database structure. Read summary section with knowledge from previous conversations to get context.
+
+Additional to regular SQL queries you can use:
+- "show tables" - return all tables in DB
+- "show create table TABLE_NAME" - show how table with given name was build.
+
+Response in YAML format.
 <objective>
 Prepare the query to retrive the data and answer to question.
 </objective>
 
-<context>
-task_13_placeholder
-</context>
+<summary>
+task_13_summary_placeholder
+</summary>
 
 <response_format>
-- query: query
+- summary: "summary"
+  isAnswer: isAnswer
+  queries:
+    - query: "query"
 </response_format>
 
 <rules>
-- Response format MUST be a VALID YAML.
+- If summary is empty prepare a query to get database structure.
 - Return only the query to answer the question.
 - Return query in one line.
-- DO NOT use MARKDOWN.
+- In summary part add all details about database structure relevant to answer the question.
+- isAnswer is a boolean it should be false during analysis process.
+- isAnswer is 'true' when query requests for data only, NOT database structure.
+- Response format MUST be a VALID YAML and MUST NOT be wrapped in any Markdown or code block formatting.
 </rules>
 """

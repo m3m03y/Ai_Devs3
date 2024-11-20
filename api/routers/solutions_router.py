@@ -131,9 +131,9 @@ def run_query_task_13(query: str) -> JSONResponse:
 
 
 @solutions_router.post("/task13/solution-query")
-def solve_task_13(question: str, tables: list[str]) -> JSONResponse:
+def solve_task_13(question: str) -> JSONResponse:
     """Solve task 13"""
-    response = answer_question(question, tables)
+    response = answer_question(question)
     if response is None:
         raise HTTPException(
             status_code=400,

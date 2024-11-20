@@ -18,16 +18,17 @@ DB_API_URL = os.environ["TASK13_DB_API_URL"]
 TASK_NAME = "database"
 VERIFY_URL = os.environ["VERIFY_URL"]
 
-MODEL = "gpt-4o"
+MODEL = "gpt-4o-mini"
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
-PLACEHOLDER = "task_13_placeholder"
+PLACEHOLDER = "task_13_summary_placeholder"
 
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-def _get_answer_query(question: str, tables_creation: list[str]) -> str:
-    prompt = GET_DATACENTERS.replace(PLACEHOLDER, "\n".join(tables_creation))
+def _get_details(question: str, summary: str) -> tuple[str, list[str], bool]:
+    prompt = GET_DATACENTERS.replace(PLACEHOLDER, summary)
+    LOG.debug("[TASK-13] Current prompt: %s.", prompt)
     completions = openai_client.chat.completions.create(
         model=MODEL,
         messages=[
@@ -41,7 +42,47 @@ def _get_answer_query(question: str, tables_creation: list[str]) -> str:
     content = message.content
     LOG.debug("[TASK-13] Content: %s.", content)
     response = yaml.safe_load(content)
-    return response[0]["query"]
+    summary = response[0]["summary"]
+    queries = response[0]["queries"]
+    is_answer = response[0]["isAnswer"]
+    LOG.debug(
+        "[TASK-13] Current knowledge:\nsummary=\n%s\nquery='%s'\nis_answer=%s",
+        summary,
+        queries,
+        is_answer,
+    )
+
+    return summary, queries, is_answer
+
+
+def _analyze_db_structure(question: str) -> str:
+    is_answer = False
+    summary = ""
+    query = ""
+    query_count = 1
+    while (not is_answer) and (query_count < 10):
+        LOG.debug("[TASK-13] Is_answer=%s, query_count=%d", is_answer, query_count)
+        summary, queries, is_answer = _get_details(question, summary)
+        if is_answer:
+            query = queries[0]["query"]
+            LOG.debug(
+                "[TASK-13] Query for answer %s found after %d queries.",
+                query,
+                query_count,
+            )
+            break
+
+        for entry in queries:
+            LOG.debug("[TASK-13] Current processed entry: '%s'.", entry)
+            query = entry["query"]
+            LOG.debug(
+                "[TASK-13] Current processed query #%d: '%s'.", query_count, query
+            )
+            response = run_query(query)
+            summary += f"\nQuery :{query} result:\n{response}\n"
+            query_count += 1
+    LOG.info("[TASK-13] Final query: %s", query)
+    return query
 
 
 def _get_datacenters_ids(datacenters_response: dict) -> list[str]:
@@ -63,13 +104,14 @@ def run_query(query: str) -> dict:
     if response is None:
         return None
     response_body = json.loads(response.text)
+    LOG.debug("[TASK-13] Response from API: %s", json.dumps(response_body))
     return response_body
 
 
-def answer_question(question: str, tables_creation: list[str]) -> dict:
+def answer_question(question: str) -> dict:
     """Get query to answer to question"""
     LOG.info("[TASK-13] Start query preparation.")
-    query = _get_answer_query(question, tables_creation)
+    query = _analyze_db_structure(question)
     LOG.info("[TASK-13] Query to answer question: %s", query)
     datacenters_response = run_query(query)
     LOG.info("[TASK-13] Retrived datacenters information.")
