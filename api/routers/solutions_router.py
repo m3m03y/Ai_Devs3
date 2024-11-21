@@ -12,6 +12,7 @@ from solutions.article_reader import answer_questions
 from solutions.keyword_extractor import extract_keywords
 from solutions.report_indexer import report_embeddings, get_answer
 from solutions.datacenter_finder import run_query, answer_question
+from solutions.searcher import find_missing_person
 
 solutions_router = APIRouter()
 
@@ -134,6 +135,24 @@ def run_query_task_13(query: str) -> JSONResponse:
 def solve_task_13(question: str) -> JSONResponse:
     """Solve task 13"""
     response = answer_question(question)
+    if response is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot find answer.",
+        )
+    return JSONResponse(content=response)
+
+
+@solutions_router.get("/task14/loop")
+def solve_task_14(question: str) -> JSONResponse:
+    """Solve task 14"""
+    if not question:
+        raise HTTPException(
+            status_code=400,
+            detail="Question must be provided.",
+        )
+
+    response = find_missing_person(question)
     if response is None:
         raise HTTPException(
             status_code=400,

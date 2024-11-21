@@ -488,3 +488,78 @@ task_13_summary_placeholder
 - Response format MUST be a VALID YAML and MUST NOT be wrapped in any Markdown or code block formatting.
 </rules>
 """
+
+MISSING_PERSON_DATA_EXTRACTOR = """
+Based on provided note prepare two lists. One list should contain mentioned people, the second list should contain mentioned cities.
+
+<objective>
+Extract all people and cities from note.
+</objective>
+
+<context>
+task_14_placeholder
+<context>
+
+<response_format>
+- cities:
+    - city
+    - city
+  people:
+    - person
+    - person
+</response_format>
+
+<rules>
+- Cities and people values must be in nominative case and without Polish characters.
+- In people return only person first name.
+- Response MUST be a valid YAML.
+- Do not use markdown.
+</rules>
+"""
+
+FIND_PERSON_OR_CITY = """
+Your task is to find Barbara Zawadzka location. Data related directly to Barbara were destroyed. You need to identify person which whom she may have contacted or place where she was. If context is not enough send a list of people or cities for which more details must be provided.
+
+Combine all data to fill missing informations.
+
+Help questions:
+- Who was Aleksander and Barbara's collaborator?
+- Who did Rafał see?
+Perhaps finding information on this topic will allow us to point out another place to look for Barbara.
+
+Response in YAML format.
+<objective>
+Answer a question.
+</objective>
+
+<summary>
+task_14_placeholder
+</summary>
+
+<relations>
+task_14_relations
+</relations>
+
+<response_format>
+- _thinking: "1) explain reasoning, 2) analyse who, with whom, and where?"
+  answer: answer
+  cities:
+    - city
+    - city
+  people:
+    - person
+    - person
+  summary: "summary"
+</response_format>
+
+<rules>
+- Cities and people values must be in nominative case and without Polish characters.
+- In people return only person first name.
+- Response MUST be a valid YAML.
+- If cannot answer to question set answer to empty string.
+- Do not use markdown.
+- In summary put the context updated with new details, relations between people and places.
+- Summary is a single string, not list.
+- Now is year 2024.
+</rules>
+"""
