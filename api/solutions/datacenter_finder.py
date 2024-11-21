@@ -61,13 +61,11 @@ def _analyze_db_structure(question: str) -> str:
     query = ""
     query_count = 1
     while (not is_answer) and (query_count < 10):
-        LOG.debug("[TASK-13] Is_answer=%s, query_count=%d", is_answer, query_count)
         summary, queries, is_answer = _get_details(question, summary)
         if is_answer:
             query = queries[0]["query"]
             LOG.debug(
-                "[TASK-13] Query for answer %s found after %d queries.",
-                query,
+                "[TASK-13] Query for answer found after %d queries.",
                 query_count,
             )
             break
@@ -81,7 +79,7 @@ def _analyze_db_structure(question: str) -> str:
             response = run_query(query)
             summary += f"\nQuery :{query} result:\n{response}\n"
             query_count += 1
-    LOG.info("[TASK-13] Final query: %s", query)
+    LOG.debug("[TASK-13] Final query: %s", query)
     return query
 
 
