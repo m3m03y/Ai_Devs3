@@ -52,18 +52,7 @@ def _read_entry_data():
     return entry_data
 
 
-def _search_data(entry_data: str, question: str = None, relations: str = None) -> dict:
-    prompt = (
-        MISSING_PERSON_DATA_EXTRACTOR.replace(PLACEHOLDER, entry_data)
-        if not question and not relations
-        else FIND_PERSON_OR_CITY.replace(PLACEHOLDER, entry_data).replace(
-            RELATIONS_PLACEHOLDER, relations
-        )
-    )
-    LOG.debug("Used prompt: %s", prompt)
-    messages = [{"role": "system", "content": prompt}]
-    if question:
-        messages.append({"role": "user", "content": question})
+def _talk_to_assistant(messages: list[dict]):
     completions = openai_client.chat.completions.create(model=MODEL, messages=messages)
     message = completions.choices[0].message
     LOG.debug("Message from assistant: %s.", message)
@@ -74,6 +63,23 @@ def _search_data(entry_data: str, question: str = None, relations: str = None) -
     if isinstance(yaml_content, list):
         yaml_content = yaml_content[0]
     return yaml_content
+
+
+def _search_starting_points(entry_data: str):
+    prompt = MISSING_PERSON_DATA_EXTRACTOR.replace(PLACEHOLDER, entry_data)
+    messages = [{"role": "system", "content": prompt}]
+    return _talk_to_assistant(messages)
+
+
+def _search_data(question: str, context: str) -> dict:
+    prompt = FIND_PERSON_OR_CITY.replace(PLACEHOLDER, context)
+
+    LOG.debug("Used prompt: %s", prompt)
+    messages = [
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": question},
+    ]
+    return _talk_to_assistant(messages)
 
 
 def _search_system(url: str, query: str) -> str:
@@ -100,50 +106,79 @@ def _search_person(name: str) -> str:
     return _search_system(PEOPLE_URL, name)
 
 
-def _create_context(data: dict) -> str:
-    relations = "\n"
-    for city in data["cities"]:
-        city_data = _search_city(city)
-        LOG.debug("City data about %s: %s.", city, city_data)
-        relations += f"{city} relations:"
-        relations += f" '{city_data}'\n" if city_data else "\n"
-    for person in data["people"]:
-        person_data = _search_person(person)
-        LOG.debug("Person data about %s: %s.", person, person_data)
-        relations += f"{person} relations:"
-        relations += f" '{person_data}'\n" if person_data else "\n"
-    LOG.debug("Relations: %s.", relations[:100])
+def _create_relations(data: dict, relations: dict = None) -> dict:
+    if relations is None:
+        LOG.debug("Initialize relations.")
+        relations = {}
+    if "cities" in data:
+        for city in data["cities"]:
+            if city not in relations:
+                relations[city] = _search_city(city)
+    if "people" in data:
+        for person in data["people"]:
+            relations[person] = _search_person(person)
+    LOG.debug("Known relations %s.", yaml.safe_dump(relations))
     return relations
 
 
-def _find_answer_to_question(context: str, relations: str, question: str) -> str:
+def _create_visited(relations: dict, visited: set[str] = None) -> set[str]:
+    if visited is None:
+        LOG.debug("Initialize visited.")
+        visited = set()
+    visited = {*relations.keys(), *visited}
+    LOG.debug("Get all visited: %s", visited)
+    return visited
+
+
+def _create_context(relations: dict, visited: set[str]) -> str:
+    context = f"Relations:\n{yaml.safe_dump(relations)}"
+    if len(visited) != 0:
+        context += f"\nVisited: {" ".join(visited)}"
+    LOG.debug("Created context: %s.", context)
+    return context
+
+
+def _check_answer(relations: dict, visited: list[str], name: str) -> str:
+    for key, value in relations.items():
+        if value is None:
+            continue
+        if (name in value) and (key not in visited):
+            LOG.debug("Answer found: %s", key)
+            return key
+    LOG.debug("Answer not found.")
+    return None
+
+
+def _find_answer_to_question(relations: dict, visited: set[str], name: str) -> str:
     answer = ""
     query_count = 1
+    context = _create_context(relations, visited)
+    LOG.debug("Initial context: %s.", context)
     while (not answer) and (query_count < 10):
-        response = _search_data(context, question, relations)
-        LOG.debug("Response #%d: %s", query_count, response)
+        assistant_response = _search_data(name, context)
+        LOG.debug("Response #%d: %s", query_count, assistant_response)
         query_count += 1
-        answer = response["answer"]
+        relations = _create_relations(assistant_response, relations)
+        answer = _check_answer(relations, visited, name)
         if answer:
-            LOG.debug("Answer found: %s.", answer)
             return answer
-        summary = response["summary"]
-        relations = _create_context(response)
-        context = summary
-        LOG.debug("New context: %s.", context)
+        visited = _create_visited(relations, visited)
+        LOG.debug("New relations: %s.", relations)
+        context = _create_context(relations, visited)
     return answer
 
 
-def find_missing_person(question: str) -> dict:
+def find_missing_person(name: str) -> dict:
     """Find place where missing person is"""
     LOG.info("Start searching...")
     entry_data = _read_entry_data()
     LOG.info("Entry data loaded: %s...", entry_data[:100])
-    starting_points = _search_data(entry_data)
+    starting_points = _search_starting_points(entry_data)
     LOG.info("Starting points discovered: %s.", json.dumps(starting_points))
-    relations = _create_context(starting_points)
+    relations = _create_relations(starting_points)
+    visited = _create_visited(relations)
     LOG.info("Finding the answer...")
-    answer = _find_answer_to_question(entry_data, relations, question)
+    answer = _find_answer_to_question(relations, visited, name)
     LOG.info("Answer found: %s.", answer)
     code, text = send_answer(
         Answer(task_id=TASK_NAME, answer_url=VERIFY_URL, answer_content=answer)

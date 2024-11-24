@@ -491,9 +491,10 @@ task_13_summary_placeholder
 
 MISSING_PERSON_DATA_EXTRACTOR = """
 Based on provided note prepare two lists. One list should contain mentioned people, the second list should contain mentioned cities.
+All entry should be in Polish and WITHOUT Polish characters.
 
 <objective>
-Extract all people and cities from note.
+Extract all people and cities from note in valid form.
 </objective>
 
 <context>
@@ -510,7 +511,8 @@ task_14_placeholder
 </response_format>
 
 <rules>
-- Cities and people values must be in nominative case and without Polish characters.
+- City or person value must be in nominative case, in Polish and WITHOUT Polish characters (example: Krakow, Rafal, Elk, Roza, Michal).
+- Replace Polish characters in cities and names.
 - In people return only person first name.
 - Response MUST be a valid YAML.
 - Do not use markdown.
@@ -518,48 +520,33 @@ task_14_placeholder
 """
 
 FIND_PERSON_OR_CITY = """
-Your task is to find Barbara Zawadzka location. Data related directly to Barbara were destroyed. You need to identify person which whom she may have contacted or place where she was. If context is not enough send a list of people or cities for which more details must be provided.
-
-Combine all data to fill missing informations.
-
-Help questions:
-- Who was Aleksander and Barbara's collaborator?
-- Who did Rafał see?
-Perhaps finding information on this topic will allow us to point out another place to look for Barbara.
+1) Detect all new entries in relations that are not present in visited and put it in response.
+2) Detected entries if is person name add to people list else add it to city list.
 
 Response in YAML format.
-<objective>
-Answer a question.
-</objective>
-
-<summary>
-task_14_placeholder
-</summary>
 
 <relations>
-task_14_relations
+task_14_placeholder
 </relations>
 
 <response_format>
-- _thinking: "1) explain reasoning, 2) analyse who, with whom, and where?"
-  answer: answer
+- _thinking: "1) Identify all new entries. 2) Make sure new entries are not in visited in any form. 3) Check whether entry is city or person name. 4) Summarize."
   cities:
     - city
     - city
   people:
     - person
     - person
-  summary: "summary"
 </response_format>
 
 <rules>
-- Cities and people values must be in nominative case and without Polish characters.
+- City or person value must be in nominative case, in Polish and WITHOUT Polish characters (example: Krakow, Rafal, Elk, Roza, Michal).
+- In response add all new entries.
+- DO NOT add entry that are in visited list (compare with and without Polish characters).
+- Some entries may have empty relations list this mean data was corrupted, such entry can be ignored.
 - In people return only person first name.
 - Response MUST be a valid YAML.
-- If cannot answer to question set answer to empty string.
 - Do not use markdown.
-- In summary put the context updated with new details, relations between people and places.
-- Summary is a single string, not list.
-- Now is year 2024.
+- In response put all new people and cities that are in relations listed and not in visited.
 </rules>
 """
