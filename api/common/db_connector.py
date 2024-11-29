@@ -13,7 +13,7 @@ TIMOUT = 30
 
 def send_request(url: str, request: DBRequest) -> requests.Response:
     """Send query to DB API"""
-
+    LOG.debug("Send query: %s to url: %s.", request.query, url)
     request_body = json.dumps(
         {"task": request.task_id, "apikey": API_KEY, "query": request.query}
     )
