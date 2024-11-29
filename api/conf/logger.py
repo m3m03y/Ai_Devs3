@@ -23,7 +23,7 @@ console_handler = logging.StreamHandler()
 file_handler.setLevel(logging.DEBUG)
 console_handler.setLevel(logging.INFO)
 
-formatter = logging.Formatter("%(levelname)s - %(message)s")
+formatter = logging.Formatter("%(levelname)s::%(module)s::%(funcName)s  %(message)s")
 file_handler.setFormatter(formatter)
 console_handler.setFormatter(formatter)
 

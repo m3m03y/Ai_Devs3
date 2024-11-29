@@ -17,7 +17,7 @@ from task_service import send_answer
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 AIDEVS_API_KEY = os.environ["API_KEY"]
 FILE_URL = os.environ["TASK3_FILE_URL"]
-VERIFY_URL = os.environ["TASK3_VERIFY_URL"]
+VERIFY_URL = os.environ["VERIFY_URL"]
 PROJECT_DIR = os.environ["PROJECT_DIR"]
 FILENAME = "task3.json"
 TIMEOUT = 60

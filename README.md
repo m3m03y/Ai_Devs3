@@ -37,3 +37,5 @@ pip -V # should be path to virtual env
 ```
 npm install -g promptfoo
 ```
+# Embeddings
+Qdrant docs: `https://qdrant.tech/documentation/embeddings/openai/`

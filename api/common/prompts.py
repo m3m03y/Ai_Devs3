@@ -342,3 +342,211 @@ task_10_article
 - Response should be a valid JSON format (not markdown).
 </rules>
 """
+
+EXTRACT_KEYWORDS_FROM_FACT = """
+Read the provided text and generate a comprehensive list of metadata/keywords.
+
+<objective>
+Extract detailed keywords and identify the main topic of the text.
+</objective>
+
+<context>
+task_11_facts
+</context>
+
+<response_format>
+{
+    "_thinking": "Explain your reasoning process",
+    "topic-name": "short description of the main subject",
+    "keywords": ["list of detailed keywords"]
+}
+</response_format>
+
+<rules>
+- Generate keywords in the NOMINATIVE CASE and SINGULAR FORM.
+- Return an empty list if files are corrupted.
+- Ensure the output is valid JSON (not markdown).
+- The topic name should be concise, focusing solely on the main person or thing in the text.
+- For invalid records, set the topic name to "invalid".
+- Include all relevant details, events, and actions as keywords.
+</rules>
+
+<example>
+USER: Franek zostawił odciski palca w szpitalu.
+AI:
+{
+    "topic-name": "Franek",
+    "keywords": ["Franek", "odcisk palca", "szpital"]
+}
+<example>
+"""
+
+EXTRACT_KEYWORDS_FROM_REPORT = """
+Read provided reports and generate metadata/keywords. Correlate the report content with relevant facts to enhance keyword extraction.
+
+<objective>
+Generate keywords for the provided text. Extract the main topic of the text, emphasizing connections to known facts.
+</objective>
+
+<facts>
+task_11_facts
+</facts>
+
+<report>
+task_11_report
+</report>
+
+<sector>
+task_11_sector
+</sector>
+
+<response_format>
+{
+    "_thinking": "Explain your reasoning process, highlighting the correlation with known facts.",
+    "keywords": [keywords-list],
+    "references": [references-list]
+}
+</response_format>
+
+<rules>
+- Generate keywords in the NOMINATIVE CASE, SINGULAR FORM and as SINGLE PHRASES.
+- Correlate report content with relevant facts to ensure comprehensive keyword extraction.
+- Return valid JSON (not markdown).
+- Include all relevant details, events, and actions as keywords.
+- If some details from facts are used, add their keys to the references list.
+- Extract sector name from filename format and add it to keywords.
+</rules>
+
+<example>
+USER: Report: Franek zostawił odciski palca w szpitalu. Sector: "report-sektor-A1.txt"
+AI:
+{
+    "keywords": ["Franek", "odcisk palca", "szpital", "sektor A1"],
+    "references": ["Franek"]
+}
+<example>
+"""
+
+GET_ANSWER_FROM_EMBEDED_DOCUMENT = """
+<objective>
+Answer question based on provided document.
+</objective>
+
+<context>
+task_12_placeholder
+</context>
+
+<rules>
+- Response must be a string.
+- Answers should be short and precise.
+- File creation date MUST be extracted from the filename.
+- If asked about ANY DATE, answer ONLY in "YYYY-MM-DD" format.
+- If asked about report date, EXTRACT the date from the FILENAME, regardless of other dates mentioned in the document.
+</rules>
+
+<example>
+<DOCUMENT>Filename: raport_12_02_2024.txt. 10 lutego stworzono pizzę. </DOCUMENT>
+USER: W raporcie, z którego dnia znajduje się wzmianka o pizzy?
+AI: 2024-02-12
+</example>
+"""
+
+GET_DATACENTERS = """
+Your task is to prepare a query to answer a question.
+1) Get database structures, read existing tables.
+2) Find structure of relevant tables.
+3) Based on collected data prepare final query.
+After each step prepare summary about uncovered database structure. Read summary section with knowledge from previous conversations to get context.
+
+Additional to regular SQL queries you can use:
+- "show tables" - return all tables in DB
+- "show create table TABLE_NAME" - show how table with given name was build.
+
+Response in YAML format.
+<objective>
+Prepare the query to retrive the data and answer to question.
+</objective>
+
+<summary>
+task_13_summary_placeholder
+</summary>
+
+<response_format>
+- summary: "summary"
+  isAnswer: isAnswer
+  queries:
+    - query: "query"
+</response_format>
+
+<rules>
+- If summary is empty prepare a query to get database structure.
+- Return only the query to answer the question.
+- Return query in one line.
+- In summary part add all details about database structure relevant to answer the question.
+- isAnswer is a boolean it should be false during analysis process.
+- isAnswer is 'true' when query requests for data only, NOT database structure.
+- Response format MUST be a VALID YAML and MUST NOT be wrapped in any Markdown or code block formatting.
+</rules>
+"""
+
+MISSING_PERSON_DATA_EXTRACTOR = """
+Based on provided note prepare two lists. One list should contain mentioned people, the second list should contain mentioned cities.
+All entry should be in Polish and WITHOUT Polish characters.
+
+<objective>
+Extract all people and cities from note in valid form.
+</objective>
+
+<context>
+task_14_placeholder
+<context>
+
+<response_format>
+- cities:
+    - city
+    - city
+  people:
+    - person
+    - person
+</response_format>
+
+<rules>
+- City or person value must be in nominative case, in Polish and WITHOUT Polish characters (example: Krakow, Rafal, Elk, Roza, Michal).
+- Replace Polish characters in cities and names.
+- In people return only person first name.
+- Response MUST be a valid YAML.
+- Do not use markdown.
+</rules>
+"""
+
+FIND_PERSON_OR_CITY = """
+1) Detect all new entries in relations that are not present in visited and put it in response.
+2) Detected entries if is person name add to people list else add it to city list.
+
+Response in YAML format.
+
+<relations>
+task_14_placeholder
+</relations>
+
+<response_format>
+- _thinking: "1) Identify all new entries. 2) Make sure new entries are not in visited in any form. 3) Check whether entry is city or person name. 4) Summarize."
+  cities:
+    - city
+    - city
+  people:
+    - person
+    - person
+</response_format>
+
+<rules>
+- City or person value must be in nominative case, in Polish and WITHOUT Polish characters (example: Krakow, Rafal, Elk, Roza, Michal).
+- In response add all new entries.
+- DO NOT add entry that are in visited list (compare with and without Polish characters).
+- Some entries may have empty relations list this mean data was corrupted, such entry can be ignored.
+- In people return only person first name.
+- Response MUST be a valid YAML.
+- Do not use markdown.
+- In response put all new people and cities that are in relations listed and not in visited.
+</rules>
+"""
