@@ -576,16 +576,48 @@ Here are the commands that the automaton recognizes:
 - DARKEN <FILENAME>
 - BRIGHTEN <FILENAME>
 
+The automaton may return new image or description. If only description is provided analyse it to create Barbara's description.
+
 If you already know what Barbara looks like, prepare her description.
+
+Hints:
+- Focus on the distinctive features.
+- What else characteristic does Barbara have in her appearance?
+- What color are Barbara’s hair?
+
+image_url: task_16_placeholder
+
 <response_format>
-- _thinking: "Explain reasoning"
-  description: "Description of Barbara"
-  command: "Command to execute using automation"
+thinking: "Explain reasoning"
+description: "Description of Barbara"
+command: "Command to execute using automation"
 <response_format>
 
 <rules>
 - In response put either the description of Barbara OR command to improve photo.
 - Response format should be a valid YML.
 - description and commands fileds are optional but one of them MUST be present in response.
+- Filename can be extracted from image_url.
+- If description is found DO NOT ADD command field.
+- Description MUST BE in Polish.
+</rules>
+"""
+
+EXTRACT_FIXED_IMAGE = """
+Your task is to get the image details. Context may contain image url, filename or description what is in that image.
+Original url is: task_16_placeholder
+
+<response_format>
+thinking: "Explain reasoning"
+image_url: "Extracted image url"
+description: "Copy of provided image description"
+</response_format>
+
+<rules>
+- image_url and description fields are optional but one of them MUST be present in response.
+- If filename is not full and valid url create a valid url link replacing name in original url.
+- Copying description DO NOT remove any details.
+- Response should contain only fields: thinking, image_url or description.
+- DO NOT add additional text.
 </rules>
 """
