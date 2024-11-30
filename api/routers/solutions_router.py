@@ -173,7 +173,7 @@ def solve_task_15(
             detail="Both usernames must be provided.",
         )
 
-    shortest_path = get_shortest_path(user_from, user_to)
+    shortest_path = get_shortest_path(user_from, user_to, initialize)
     if shortest_path is None:
         raise HTTPException(
             status_code=400,
