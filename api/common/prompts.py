@@ -550,3 +550,42 @@ task_14_placeholder
 - In response put all new people and cities that are in relations listed and not in visited.
 </rules>
 """
+
+EXTRACT_URLS = """
+Detect any photo mention and main resource url. Build full links for 4 photos mentioned in description.
+
+<rules>
+- Response MUST BE a valid YAML url list.
+- Response should contain only extracted full links in YAML format.
+- DO NOT add additional text.
+- DO NOT return the possible repair options.
+</rules>
+"""
+
+IMAGE_ANALYSIS = """
+Your task its to describe Barbara based on provided images. Barbara is definitely on at least one, and maybe even all of them. You can instruct the automaton on how to improve these photos. You can send commands like: DARKEN IMG_1234.PNG.
+
+The automaton can improve your existing photos. It supports several tools:
+
+- repairing photos with noise/glitches
+- brightening photographs
+- darkening photographs
+
+Here are the commands that the automaton recognizes:
+- REPAIR <FILENAME>
+- DARKEN <FILENAME>
+- BRIGHTEN <FILENAME>
+
+If you already know what Barbara looks like, prepare her description.
+<response_format>
+- _thinking: "Explain reasoning"
+  description: "Description of Barbara"
+  command: "Command to execute using automation"
+<response_format>
+
+<rules>
+- In response put either the description of Barbara OR command to improve photo.
+- Response format should be a valid YML.
+- description and commands fileds are optional but one of them MUST be present in response.
+</rules>
+"""

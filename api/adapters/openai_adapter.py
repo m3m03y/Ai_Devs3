@@ -1,6 +1,5 @@
 """Adapter for OpenAi Api"""
 
-import os
 from openai import OpenAI
 from adapters.ai_interface import AiInterface
 from conf.logger import LOG
@@ -12,8 +11,10 @@ class OpenAiAdapter(AiInterface):
     def __init__(self, api_key: str = None, base_url: str = None):
         if api_key:
             self.openai_client = OpenAI(api_key=api_key)
+            LOG.debug("Initialize remote OpenAI client.")
         elif base_url:
             self.openai_client = OpenAI(base_url=base_url)
+            LOG.debug("Initialize local OpenAI client.")
 
     def get_first_completions(
         self,

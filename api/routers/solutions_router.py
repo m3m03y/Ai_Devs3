@@ -14,6 +14,7 @@ from solutions.report_indexer import report_embeddings, get_answer
 from solutions.datacenter_finder import run_query, answer_question
 from solutions.searcher import find_missing_person
 from solutions.grapher import get_shortest_path
+from solutions.image_fixer import get_person_description
 
 solutions_router = APIRouter()
 
@@ -180,3 +181,15 @@ def solve_task_15(
             detail="Cannot find shortest_path.",
         )
     return JSONResponse(content=shortest_path)
+
+
+@solutions_router.get("/task16/image-fixer")
+def solve_task_16() -> JSONResponse:
+    """Solve task 16"""
+    result = get_person_description()
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot process images.",
+        )
+    return JSONResponse(content=result)
