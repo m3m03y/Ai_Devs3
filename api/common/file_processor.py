@@ -68,3 +68,22 @@ def save_file(filename: str, dirname: str, content: str) -> None:
     with open(file_path, "w", encoding="UTF-8") as file:
         file.write(content)
     LOG.debug("File %s saved successfully.", filename)
+
+
+def create_jsonl(
+    prompt: str, dataset: list[dict], data_name: str, label_name: str
+) -> list[dict]:
+    """Converts dataset with input data and labels into jsonl format."""
+    jsonl_dataset = []
+    for entry in dataset:
+        jsonl_dataset.append(
+            {
+                "messages": [
+                    {"role": "system", "content": prompt},
+                    {"role": "user", "content": entry[data_name]},
+                    {"role": "assistant", "content": entry[label_name]},
+                ]
+            }
+        )
+    LOG.debug("Dataset converted to jsonl format.")
+    return jsonl_dataset

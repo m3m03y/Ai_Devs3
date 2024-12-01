@@ -15,6 +15,7 @@ from solutions.datacenter_finder import run_query, answer_question
 from solutions.searcher import find_missing_person
 from solutions.grapher import get_shortest_path
 from solutions.image_fixer import get_person_description
+from solutions.research import prepare_data
 
 solutions_router = APIRouter()
 
@@ -192,4 +193,11 @@ def solve_task_16() -> JSONResponse:
             status_code=400,
             detail="Cannot process images.",
         )
+    return JSONResponse(content=result)
+
+
+@solutions_router.get("/task17/create-jsonl")
+def prepare_data_task_17() -> JSONResponse:
+    """Prepare data for task 17"""
+    result = prepare_data()
     return JSONResponse(content=result)
