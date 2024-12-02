@@ -621,3 +621,72 @@ description: "Copy of provided image description"
 - DO NOT add additional text.
 </rules>
 """
+
+BROWSE_SITE = """
+1. Read questions.
+2. Analyze context and determine which questions have answers on this page:
+    - If answers are found, return a list of the corresponding question keys.
+    - If no answers are found, return an empty list.
+3. Analyze links in the page context and return all links that may help answer the questions.
+4. Decide which link to go to next:
+    - Analyze links found in context and the discovered links.
+    - Ensure the selected link is not in the `visited_links`.
+
+Current base URL: `task_18_base_url`
+<questions>
+task_18_questions
+</questions>
+
+<context>
+task_18_context
+</context>
+
+<visited_links>
+task_18_visited_links
+</visited_links>
+
+<discovered_links>
+task_18_links
+</discovered_links>
+
+<response_format>
+thinking: "explain-reasoning"
+answers: [list-of-question-keys]
+redirect-to: "url-of-next-page"  # Must not be in visited_links
+links: [list-of-discovered-links-from-context]
+</response_format>
+
+<rules>
+- Response in YAML format.
+- If no answers are found, leave the answers list empty.
+- `redirect-to` MUST contain a page to go next and MUST NOT be present in `visited_links`.
+- `links` SHOULD include all discovered links that may help answer questions.
+- All links must be valid full links.
+- If only a subpage address is provided, use the base URL to create the full URL.
+- Links with answers MUST allow to build concise and specific answer, make sure all details for questions are present there.
+- There could be 2-3 links on the page that appear to hold valuable information. Instead of starting with the first one for redirect-to, choose the most probable link.
+</rules>
+"""
+
+ANSWER_QUESTIONS_BASED_ON_WEBSITES = """
+Based on pages content answer given questions.
+
+<questions>
+task_18_questions
+</questions>
+
+<context>
+task_18_context
+</context>
+
+<response_format>
+"01": "answer for question 01"
+"02": "answer for question 02"
+"03": "answer for question 03"
+</response_format>
+
+<rules>
+- Response must be valid YAML.
+- Answers MUST BE concise and specific.
+</rules>
+"""

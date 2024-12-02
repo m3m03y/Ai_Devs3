@@ -16,6 +16,7 @@ from solutions.searcher import find_missing_person
 from solutions.grapher import get_shortest_path
 from solutions.image_fixer import get_person_description
 from solutions.research import prepare_data, classify_data
+from solutions.softo import search_answers
 
 solutions_router = APIRouter()
 
@@ -207,4 +208,16 @@ def prepare_data_task_17() -> JSONResponse:
 def solve_task_17() -> JSONResponse:
     """Solve task 17"""
     result = classify_data()
+    return JSONResponse(content=result)
+
+
+@solutions_router.get("/task18/search-answers")
+def solve_task_18(build_urls: bool = False) -> JSONResponse:
+    """Solve task 18"""
+    result = search_answers(build_urls)
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot find answers.",
+        )
     return JSONResponse(content=result)
