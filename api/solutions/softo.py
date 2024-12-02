@@ -8,6 +8,7 @@ import json
 from http import HTTPStatus
 import yaml
 import requests
+from markdownify import markdownify as md
 
 from adapters.openai_adapter import OpenAiAdapter
 from common.file_processor import read_file, save_file
@@ -110,7 +111,7 @@ def _get_context(url: str) -> str:
     if response.status_code != HTTPStatus.OK:
         LOG.error("Could not get initial page.")
         return None
-    return response.text
+    return md(response.text)
 
 
 def _browse_sites(questions: dict) -> dict:
@@ -160,7 +161,7 @@ def _answer_questions(questions: dict, urls_with_answers: dict) -> dict:
         if page_response != HTTPStatus.OK:
             LOG.warning("Could not read content of page: %s.", link)
             continue
-        context += f"{page_response.text}\n"
+        context += f"{md(page_response.text)}\n"
     LOG.debug("Context: %s.", context)
     prompt = ANSWER_QUESTIONS_BASED_ON_WEBSITES.replace(
         "task_18_questions", json.dumps(questions)
