@@ -23,3 +23,9 @@ class DBRequest(BaseModel):
 
     task_id: str
     query: str
+
+
+class Instruction(BaseModel):
+    """Request body for task 19"""
+
+    instruction: str

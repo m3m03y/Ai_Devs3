@@ -2,6 +2,9 @@
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, PlainTextResponse
+
+from models import Instruction
+
 from solutions.captcha_solver import find_hidden_data
 from solutions.robot_dump import verification_process
 from solutions.file_fixer import fix_file
@@ -17,6 +20,7 @@ from solutions.grapher import get_shortest_path
 from solutions.image_fixer import get_person_description
 from solutions.research import prepare_data, classify_data
 from solutions.softo import search_answers
+from solutions.webhook import get_details, send_webhook_url
 
 solutions_router = APIRouter()
 
@@ -219,5 +223,29 @@ def solve_task_18(build_urls: bool = False) -> JSONResponse:
         raise HTTPException(
             status_code=400,
             detail="Cannot find answers.",
+        )
+    return JSONResponse(content=result)
+
+
+@solutions_router.post("/task19/webhook")
+def webhook_task_19(instruction: Instruction) -> JSONResponse:
+    """Api for task 19"""
+    result = get_details(instruction)
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot find field.",
+        )
+    return JSONResponse(content=result)
+
+
+@solutions_router.get("/task19/send-answer")
+def solve_task_19(webhook_url: str) -> JSONResponse:
+    """Solve task 19"""
+    result = send_webhook_url(webhook_url)
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Webhook task failed.",
         )
     return JSONResponse(content=result)

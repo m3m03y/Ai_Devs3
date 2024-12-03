@@ -690,3 +690,37 @@ task_18_context
 - Answers MUST BE concise and specific.
 </rules>
 """
+
+FIND_POSITION = """
+You have a 4x4 grid, with rows and columns indexed from 0 to 3. The top left corner is point (0,0). Columns increase to the right, and rows increase downward. Your task is to provide the coordinates of your final position after executing the given instructions.
+
+Objective: Give me the final position.
+
+Response Format:
+position: [x, y]
+
+Rules:
+- The starting point is always (0,0).
+- Answer must be valid YAML.
+
+Examples:
+User: Move two steps right and then down.
+AI: position: [2, 1]
+
+User: I moved one step right and then all the way down.
+AI: position: [1, 3]
+"""
+
+BUILD_GRID = """
+Based on the image, prepare a 4x4 grid (matrix) that describes the cells presented in the image in words.
+Point 0,0 is always START, then columns increase to the right, and rows increase downward.
+**Rules:**
+- Description must be a maximum of 2 words.
+- Description must be in Polish.
+- Description must contain all details in cell.
+**Example Output:**
+[[woda, skały, drzewo, wiatrak],
+ [woda, kwiatki, skały, wiatrak],
+ [woda, auto, ul, wiatrak],
+ [woda, skały, skały, wiatrak]]
+"""
