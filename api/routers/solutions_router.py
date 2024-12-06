@@ -21,6 +21,7 @@ from solutions.image_fixer import get_person_description
 from solutions.research import prepare_data, classify_data
 from solutions.softo import search_answers
 from solutions.webhook import get_details, send_webhook_url
+from solutions.notes import analyse_notes
 
 solutions_router = APIRouter()
 
@@ -247,5 +248,17 @@ def solve_task_19(webhook_url: str) -> JSONResponse:
         raise HTTPException(
             status_code=400,
             detail="Webhook task failed.",
+        )
+    return JSONResponse(content=result)
+
+
+@solutions_router.get("/task20/analyse-notes")
+def solve_task_20() -> JSONResponse:
+    """Solve task 20"""
+    result = analyse_notes()
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Notes analysis failed.",
         )
     return JSONResponse(content=result)

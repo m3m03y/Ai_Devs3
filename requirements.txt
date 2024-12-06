@@ -16,3 +16,5 @@ qdrant_client==1.12.1
 neo4j==5.26.0
 pandas==2.2.3
 markdownify==0.14.1
+pypdf==5.1.0
+pypdf[image]==5.1.0
