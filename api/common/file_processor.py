@@ -53,7 +53,7 @@ def read_remote_file(url: str) -> str:
     return response.text
 
 
-def save_file(filename: str, dirname: str, content: str) -> None:
+def save_file(filename: str, dirname: str, content: str, mode: str = "text") -> None:
     """Save specified data to file"""
     if not filename:
         LOG.warning("Filename is missing.")
@@ -65,9 +65,17 @@ def save_file(filename: str, dirname: str, content: str) -> None:
         LOG.warning("Content is missing.")
         return None
     file_path = os.fspath(f"{dirname}/{filename}")
-    with open(file_path, "w", encoding="UTF-8") as file:
-        file.write(content)
-    LOG.debug("File %s saved successfully.", filename)
+    if mode == "image":
+        with open(file_path, "wb") as file:
+            file.write(content)
+            LOG.debug("Image %s saved successfully.", filename)
+            return
+    if mode == "text":
+        with open(file_path, "w", encoding="UTF-8") as file:
+            file.write(content)
+            LOG.debug("File %s saved successfully.", filename)
+            return
+    LOG.warning("Unsupported file mode: %s, cannot save file.", mode)
 
 
 def create_jsonl(
