@@ -11,6 +11,7 @@ import requests
 from markdownify import markdownify as md
 
 from adapters.openai_adapter import OpenAiAdapter
+from adapters.ai_devs_adapter import get_questions
 from common.file_processor import read_file, save_file
 from common.prompts import BROWSE_SITE, ANSWER_QUESTIONS_BASED_ON_WEBSITES
 from conf.logger import LOG
@@ -35,35 +36,6 @@ TIMEOUT = 30
 
 
 openai_client = OpenAiAdapter(api_key=os.environ["OPENAI_API_KEY"])
-
-
-def _get_questions() -> dict:
-    questions_file = os.fspath(f"{RESOURCE_PATH}/{QUESTIONS_FILENAME}")
-
-    if os.path.isfile(questions_file):
-        try:
-            questions = json.loads(read_file(RESOURCE_PATH, QUESTIONS_FILENAME))
-            if questions:
-                LOG.debug("Questions loaded from file: %s.", json.dumps(questions))
-                return questions
-            os.remove(questions_file)
-            LOG.debug("Questions file was empty and has been deleted.")
-        except json.decoder.JSONDecodeError:
-            LOG.error("Could not decode questions from file.")
-            os.remove(questions_file)
-
-    try:
-        questions_response = requests.get(QUESTIONS_URL, timeout=TIMEOUT)
-        if questions_response.status_code != HTTPStatus.OK:
-            LOG.error("Could not get questions from url.")
-            return None
-        questions = json.loads(questions_response.text)
-        LOG.debug("Questions loaded from url: %s.", json.dumps(questions))
-        save_file(QUESTIONS_FILENAME, RESOURCE_PATH, json.dumps(questions))
-        return questions
-    except json.decoder.JSONDecodeError:
-        LOG.error("Could not decode questions from url.")
-        return None
 
 
 def _analyse_site(
@@ -199,7 +171,7 @@ def _get_urls_with_answers(questions: dict, build_urls: bool = False) -> dict:
 def search_answers(build_urls: bool = False) -> dict:
     """Search answers to questions"""
     LOG.info("Start browsing...")
-    questions = _get_questions()
+    questions = get_questions(QUESTIONS_URL, RESOURCE_PATH, QUESTIONS_FILENAME)
     if questions is None:
         return {"error": "No questions found."}
     LOG.info("Questions loaded: %s.", json.dumps(questions))
