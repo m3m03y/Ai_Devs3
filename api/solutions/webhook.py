@@ -4,11 +4,7 @@ Webhook to move through grid
 """
 
 import os
-import json
-from http import HTTPStatus
 import yaml
-import requests
-from markdownify import markdownify as md
 
 from adapters.openai_adapter import OpenAiAdapter
 from common.prompts import FIND_POSITION
