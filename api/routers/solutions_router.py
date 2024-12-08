@@ -253,9 +253,9 @@ def solve_task_19(webhook_url: str) -> JSONResponse:
 
 
 @solutions_router.get("/task20/analyse-notes")
-def solve_task_20() -> JSONResponse:
+def solve_task_20(ai_ocr: bool = False, run_embedding: bool = False) -> JSONResponse:
     """Solve task 20"""
-    result = analyse_notes()
+    result = analyse_notes(ai_ocr, run_embedding)
     if result is None:
         raise HTTPException(
             status_code=400,

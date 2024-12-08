@@ -1,8 +1,8 @@
 """Common file functions"""
 
 import os
-import requests
 from http import HTTPStatus
+import requests
 from conf.logger import LOG
 
 
@@ -25,14 +25,18 @@ def get_text_files_list(dirname: str, extensions: list[str] = None) -> list[str]
     return files
 
 
-def read_file(dirname: str, filename: str) -> str:
+def read_file(dirname: str, filename: str, mode: str = "text") -> str:
     """Read file content in directory"""
     full_path = os.fspath(f"{dirname}/{filename}")
     LOG.debug("Read file: %s", full_path)
     if not os.path.isfile(full_path):
         raise ValueError("Cannot read file.")
-    with open(full_path, "r", encoding="UTF-8") as file:
-        return file.read()
+    if mode == "image":
+        with open(full_path, "rb") as file:
+            return file.read()
+    if mode == "text":
+        with open(full_path, "r", encoding="UTF-8") as file:
+            return file.read()
 
 
 def read_remote_file(url: str) -> str:

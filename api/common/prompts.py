@@ -724,3 +724,26 @@ Point 0,0 is always START, then columns increase to the right, and rows increase
  [woda, auto, ul, wiatrak],
  [woda, skały, skały, wiatrak]]
 """
+
+FIND_ANSWER_IN_NOTES = """
+Given a parts of notes answer the question: _question.
+
+<objective>
+Answer question.
+</objective>
+
+<context>
+_context
+</context>
+
+<response_format>
+thinking: "Explain reasoning"
+answer: "Answer to the question"
+</response_format>
+
+<rules>
+- Answer MUST BE concise.
+- Answer MUST BE in Polish.
+- Response format MUST BE YAML.
+</rules>
+"""
