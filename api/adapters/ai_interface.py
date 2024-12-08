@@ -23,3 +23,13 @@ class AiInterface(ABC):
             {"type": "text", "text": text},
             {"type": "image_url", "image_url": {"url": image_url}},
         ]
+
+    @abstractmethod
+    def get_embeddings(self, model_name: str, data: str | list[str]) -> list:
+        """Get embeddings of data"""
+
+    @abstractmethod
+    def create_query_vector(
+        self, query_input: str | list[str], model_name: str
+    ) -> list[float]:
+        """Create query vector"""

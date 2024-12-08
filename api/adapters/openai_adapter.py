@@ -37,3 +37,17 @@ class OpenAiAdapter(AiInterface):
         content = message.content
         LOG.debug("Content of message from Ai Assistant: %s.", content)
         return content
+
+    def get_embeddings(self, model_name, data) -> list:
+        result = self.openai_client.embeddings.create(input=data, model=model_name)
+        LOG.debug("Embeddings result: %s.", result)
+        return result.data
+
+    def create_query_vector(self, query_input, model_name) -> list[float]:
+        query_vector = (
+            self.openai_client.embeddings.create(input=query_input, model=model_name)
+            .data[0]
+            .embedding
+        )
+        LOG.debug("Query vector for query: '%s': %s.", query_input, query_vector)
+        return query_vector

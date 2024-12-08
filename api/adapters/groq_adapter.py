@@ -42,3 +42,17 @@ class GroqAdapter(AiInterface):
                 e.message,
             )
             raise AiAssistantException(e.status_code, e.message) from e
+
+    def get_embeddings(self, model_name, data) -> list:
+        result = groq_client.embeddings.create(input=data, model=model_name)
+        LOG.debug("Embeddings result: %s.", result)
+        return result.data
+
+    def create_query_vector(self, query_input, model_name) -> list[float]:
+        query_vector = (
+            groq_client.embeddings.create(input=query_input, model=model_name)
+            .data[0]
+            .embedding
+        )
+        LOG.debug("Query vector for query: '%s': %s.", query_input, query_vector)
+        return query_vector
